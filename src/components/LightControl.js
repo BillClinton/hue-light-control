@@ -7,10 +7,8 @@
 //   sendTo,
 // } from 'https://cdn.skypack.dev/xstate@5.13.1';
 
-export default class LightButton extends HTMLElement {
+export default class LightControl extends HTMLElement {
   #machine;
-  #name;
-  #service = null;
 
   constructor() {
     super();
@@ -21,9 +19,6 @@ export default class LightButton extends HTMLElement {
 
   setMachine(machine) {
     this.#machine = machine;
-    // this.#machine.subscribe((state) => {
-    //   console.log('state', state);
-    // });
   }
 
   getMachine() {
@@ -38,10 +33,6 @@ export default class LightButton extends HTMLElement {
     });
   };
 
-  //   button.addEventListener('click', (event) => {
-  //     setOnState(this.getAttribute('lightID'), !state.on);
-  //   });
-
   pickerInputHandler = (event) => {
     app.system.send({
       type: 'set.color.state',
@@ -49,23 +40,6 @@ export default class LightButton extends HTMLElement {
       color: event.target.value,
     });
   };
-
-  //   picker.addEventListener('input', (event) => {
-  //     setColorState(
-  //       this.getAttribute('lightID'),
-  //       event.target.value,
-  //       this.getAttribute('lightModelID'),
-  //       false
-  //     );
-  //   });
-
-  //   picker.addEventListener('change', (event) => {
-  //     setColorState(
-  //       this.getAttribute('lightID'),
-  //       event.target.value,
-  //       this.getAttribute('lightModelID')
-  //     );
-  //   });
 
   connectedCallback() {
     // const name = this.innerHTML;
@@ -122,4 +96,4 @@ export default class LightButton extends HTMLElement {
   }
 }
 
-customElements.define('light-button', LightButton);
+customElements.define('light-button', LightControl);
