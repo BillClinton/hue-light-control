@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="app.js" defer type="module"></script>
+
+    <style>
+      /* Don't show slotted content before component is defined */
+      light-button:not(:defined) {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <template id="light-button-template">
+      <style>
+        .wrapper {
+          background-color: inherit;
+          display: grid;
+          grid-template-columns: 10fr 2fr;
+          grid-gap: 12px;
+          align-items: center;
+          width: 100%;
+        }
+        button {
+          background-color: #778;
+          color: #fff;
+          border: none;
+          font-size: 16px;
+          border-radius: 5px;
+          cursor: pointer;
+          height: 48px;
+          margin: 6px 0;
+          border: 6px solid #000000;
+        }
+        .picker {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          background-color: transparent;
+          width: 60px;
+          height: 60px;
+          border: none;
+          cursor: pointer;
+          padding: 0;
+        }
+        .picker::-webkit-color-swatch {
+          border-radius: 50%;
+          border: 6px solid #000000;
+        }
+        .picker::-moz-color-swatch {
+          border-radius: 50%;
+          border: 6px solid #000000;
+        }
+        .picker:disabled {
+          cursor: not-allowed;
+          opacity: 0.25;
+        }
+      </style>
+      <p class="wrapper">
+        <button>&nbsp;</button>
+        <input
+          type="color"
+          id="head"
+          name="head"
+          value="#e66465"
+          class="picker"
+        />
+      </p>
+    </template>
+    <light-button data-id="43">yoyoyo</light-button>
+    <light-button data-id="35"></light-button>
+    <light-button data-id="43"></light-button>
+    <!-- <light-button class="yo"></light-button>
+    <light-button></light-button>  -->
+  </body>
+</html>
