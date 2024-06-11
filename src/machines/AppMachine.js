@@ -19,7 +19,7 @@ const AppMachine = createMachine(
           onDone: 'ready',
           onError: 'ready',
         },
-        exit: ['initButtons'],
+        exit: ['initControls'],
       },
       ready: {
         on: {
@@ -125,42 +125,40 @@ const AppMachine = createMachine(
           );
         }
       },
-      initButtons: assign(({ context }) => {
-        // collect all the light-button elements from the DOM
-        const LightControlList = document.querySelectorAll('light-button');
-        const lights = [];
+      initControls: assign(({ context }) => {
+        // collect all the light-control elements from the DOM
+        const LightControlList = document.querySelectorAll('light-control');
+        const controls = [];
 
         // Loop through the light elements
         for (let i = 0; i < LightControlList.length; i++) {
-          const light = LightControlList[i];
-          const lightId = light.dataset.id;
+          const control = LightControlList[i];
+          const lightId = control.dataset.id;
           const systemId = crypto.randomUUID();
           const lightData = app.store.getLight(lightId);
 
-          const state = lightData.state;
-          const color = convertXYToRGB(state.xy[0], state.xy[1], state.bri);
-
           if (!lightId) {
             console.warn(
-              `<light-button> elements must have a 'data-id' with the value of the Hue light ID.`
+              `<light-control> elements must have a 'data-id' with the value of the Hue light ID.`
             );
           } else {
             // Set light dataset
             const state = lightData.state;
             const color = convertXYToRGB(state.xy[0], state.xy[1], state.bri);
 
-            light.dataset.systemId = systemId;
-            light.dataset.state = JSON.stringify(state);
-            light.dataset.name = lightData.name;
-            light.dataset.color = color;
-            light.dataset.modelid = lightData.modelid;
+            control.dataset.systemId = systemId;
+            control.dataset.state = JSON.stringify(state);
+            control.dataset.name = lightData.name;
+            control.dataset.color = color;
+            control.dataset.modelid = lightData.modelid;
 
-            lights.push({ lightId, systemId, light });
-            light.render();
+            controls.push({ lightId, systemId, control });
+            console.log('control', control);
+            control.render();
           }
         }
         // return the context with the new lights array
-        return { ...context, lights };
+        return { ...context, controls };
       }),
     },
     actors: {
