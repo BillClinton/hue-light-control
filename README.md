@@ -77,6 +77,10 @@ If you wish, you can override the name of the light:
 
 `<light-control data-id="35">Custom Light Name</light-button>`
 
+If you are unsure of the IDs of your lights, include the light-list component in your page for a quick reference:
+
+`<light-list></light-list>`
+
 ### Anatomy of the light-control element
 
 The `<light-control>` element consists of three native HTML elements, inside a `<p>` element with a class name of `.wrapper`:
