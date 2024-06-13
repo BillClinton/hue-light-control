@@ -11,7 +11,9 @@ const System = {
 
     document.addEventListener('hue-set-brightness', async (e) => {
       const response = await app.system.setBrightnessState(e.detail);
-      app.system.updateState(response);
+      if (e.detail.update) {
+        app.system.updateState(response);
+      }
     });
 
     document.addEventListener('hue-set-color', async (e) => {
