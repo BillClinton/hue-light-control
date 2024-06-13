@@ -31,7 +31,7 @@ export default class LightList extends HTMLElement {
       this.innerHTML = '';
       this.appendChild(list);
     } else {
-      this.innerHTML = 'No lights found';
+      this.innerHTML = '';
     }
   }
 }
