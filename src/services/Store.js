@@ -1,12 +1,48 @@
-import API from './API.js';
 import { convertRGBToXY, approximateBrightness } from '../services/Util.js';
 
 const Store = {
   lights: {},
   rooms: {},
+  config: {
+    ip: '',
+    key: '',
+  },
 
   loadAll: async () => {
-    let response = await Promise.all([API.fetchLights(), API.fetchRooms()]);
+    let response = await Promise.all([
+      app.store.fetchLights(),
+      app.store.fetchRooms(),
+    ]);
+  },
+
+  fetchLights: async () => {
+    const result = await fetch(
+      `http://${app.store.config.ip}/api/${app.store.config.key}/lights`
+    );
+    const response = await result.json();
+    if (response[0]?.error) {
+      console.warn(
+        `error communicating with Hue bridge: ${response[0].error.description}`
+      );
+      app.store.lights = {};
+    } else {
+      app.store.lights = response;
+    }
+  },
+
+  fetchRooms: async () => {
+    const result = await fetch(
+      `http://${app.store.config.ip}/api/${app.store.config.key}/groups`
+    );
+    const response = await result.json();
+    if (response[0]?.error) {
+      console.warn(
+        `error communicating with Hue bridge: ${response[0].error.description}`
+      );
+      app.store.rooms = {};
+    } else {
+      app.store.rooms = response;
+    }
   },
 
   getLight: (lightID) => {
@@ -15,7 +51,7 @@ const Store = {
 
   setOnState: async (lightID, on = true) => {
     const result = await fetch(
-      `${API.domain}/api/${API.token}${API.path}/${lightID}/state`,
+      `http://${app.store.config.ip}/api/${app.store.config.key}/lights/${lightID}/state`,
       {
         method: 'PUT',
         body: JSON.stringify({ on: on }),
@@ -29,7 +65,7 @@ const Store = {
     let bri = approximateBrightness(color);
 
     const result = await fetch(
-      `${API.domain}/api/${API.token}${API.path}/${lightID}/state`,
+      `http://${app.store.config.ip}/api/${app.store.config.key}/lights/${lightID}/state`,
       {
         method: 'PUT',
         body: JSON.stringify({ xy: Object.values(xy), bri: bri }),
