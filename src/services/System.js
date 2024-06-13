@@ -16,11 +16,34 @@ const System = {
       }
     });
 
-    await app.system.loadData();
-    app.system.initControls();
+    if (app.system.initStore()) {
+      await app.system.loadData();
+      app.system.initControls();
+    }
   },
 
   loadData: async () => await app.store.loadAll(),
+
+  initStore: () => {
+    const hueConfig = document.querySelector('hue-config');
+    if (!hueConfig) {
+      console.warn(
+        `No <hue-config> element found.  Please add a <hue-config> element to your document.`
+      );
+      return false;
+    }
+    if (!hueConfig.dataset.ip || !hueConfig.dataset.key) {
+      console.warn(
+        `The <hue-config> element must have 'data-ip' and 'data-key' attributes.`
+      );
+      return false;
+    }
+    app.store.config = {
+      ip: hueConfig.dataset.ip,
+      key: hueConfig.dataset.key,
+    };
+    return true;
+  },
 
   initControls: () => {
     // collect all the light-control elements from the DOM
