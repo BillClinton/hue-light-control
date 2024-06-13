@@ -1,5 +1,4 @@
 import cieRgbColorConverter from 'cie-rgb-color-converter';
-// import cieRgbColorConverter from 'https://cdn.skypack.dev/cie-rgb-color-converter';
 
 export function convertXYToRGB(x, y, bri) {
   const rgb = cieRgbColorConverter.xyBriToRgb(x, y, bri);
