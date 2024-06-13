@@ -13,11 +13,11 @@
   "license": "ISC",
   "devDependencies": {
     "webpack": "^5.91.0",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
-    "cie-rgb-color-converter": "^1.0.6",
-    "xstate": "^5.13.1"
+    "cie-rgb-color-converter": "^1.0.6"
   }
 }
