@@ -7,6 +7,7 @@ import System from './services/System.js';
 // Link web components
 import HueConfig from './components/HueConfig.js';
 import LightControl from './components/LightControl.js';
+import LightList from './components/LightList.js';
 
 // Set up app object
 window.app = {};

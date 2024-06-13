@@ -13,6 +13,7 @@ const Store = {
       app.store.fetchLights(),
       app.store.fetchRooms(),
     ]);
+    window.dispatchEvent(new Event('hue-data-loaded'));
   },
 
   fetchLights: async () => {
