@@ -60,6 +60,17 @@ const Store = {
     return await result.json();
   },
 
+  setBrightnessState: async (lightID, bri) => {
+    const result = await fetch(
+      `http://${app.store.config.ip}/api/${app.store.config.key}/lights/${lightID}/state`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({ bri: bri }),
+      }
+    );
+    return await result.json();
+  },
+
   setColorState: async (lightID, color, modelID) => {
     let xy = convertRGBToXY(color, modelID);
     let bri = approximateBrightness(color);

@@ -18,6 +18,17 @@ export default class LightControl extends HTMLElement {
     document.dispatchEvent(stateEvent);
   };
 
+  rangeInputHandler = (event) => {
+    const bri = Math.round((event.target.value * 254) / 100);
+    const stateEvent = new CustomEvent('hue-set-brightness', {
+      detail: {
+        systemId: this.dataset.systemId,
+        bri: bri,
+      },
+    });
+    document.dispatchEvent(stateEvent);
+  };
+
   pickerInputHandler = (event) => {
     const stateEvent = new CustomEvent('hue-set-color', {
       detail: {
@@ -62,17 +73,22 @@ export default class LightControl extends HTMLElement {
       this.root.appendChild(content);
 
       const button = this.root.querySelector('button');
+      const range = this.root.querySelector('input[type=range]');
       const picker = this.root.querySelector('input[type=color]');
 
       button.addEventListener('click', this.buttonClickHandler.bind(this));
       button.innerText = name + ' : ' + (state.on ? 'on' : 'off');
 
-      picker.value = color;
+      range.addEventListener('change', this.rangeInputHandler.bind(this));
+      range.value = Math.round((parseInt(state.bri) * 100) / 254);
+
       if (state.on) {
         picker.removeAttribute('disabled');
+        range.removeAttribute('disabled');
         picker.value = color;
       } else {
         picker.setAttribute('disabled', true);
+        range.setAttribute('disabled', true);
         // picker.value = bg;
         picker.value = 'rgba(0, 0, 0, 0)';
       }

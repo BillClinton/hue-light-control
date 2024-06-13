@@ -9,6 +9,11 @@ const System = {
       app.system.updateState(response);
     });
 
+    document.addEventListener('hue-set-brightness', async (e) => {
+      const response = await app.system.setBrightnessState(e.detail);
+      app.system.updateState(response);
+    });
+
     document.addEventListener('hue-set-color', async (e) => {
       const response = await app.system.setColorState(e.detail);
       if (e.detail.update) {
@@ -149,6 +154,16 @@ const System = {
 
     // Set the `on` state and return the response
     return await app.store.setOnState(light.control.dataset.id, on);
+  },
+
+  setBrightnessState: async ({ systemId, bri }) => {
+    // look up control in the context.controls array by systemId
+    const light = app.system.context.controls.find(
+      (item) => item.systemId === systemId
+    );
+
+    // Set the `bri` state and return the response
+    return await app.store.setBrightnessState(light.control.dataset.id, bri);
   },
 
   setColorState: async ({ systemId, color }) => {
