@@ -2,7 +2,7 @@
 
 A web component that allows one to add hue light controls to their html pages.
 
-Simple Usage: `<light-button data-id="35"></light-button>`
+Simple Usage: `<light-control data-id="35"></light-control>`
 
 # Description
 
@@ -10,9 +10,44 @@ Simple Usage: `<light-button data-id="35"></light-button>`
 
 The simple answer is web components are custom HTML elements which can be used as desired in your user interface.
 
-## How do I use the hue-light-control in my own UI?
+## Using the hue-light-control in your own local web application.
 
-### Initial Configuration steps
+### Step 1: Know the local IP of your Hue bridge
+
+An easy way to find the IP address of your bridge is to open the Hue app on your phone or tablet, go to `Settings >> Bridge Settings` and it will be listed there. But if you have trouble finding it there, the "get started" guide on the Hue developer site lists several other methods: https://developers.meethue.com/develop/get-started-2/
+
+### Step 2: Get an authorized user token from your Hue bridge
+
+Once you have the local IP address of your bridge, you can use Hue's clip tool to get an API authorization token. Go to this address in your browser, using your Hue bridge's IP address:
+
+`https://<bridge ip address>/debug/clip.html`
+
+Enter these values in the form and press the POST button:
+
+```
+URL:	/api
+Body:	{"devicetype":"my_hue_app#iphone peter"}
+Method:	POST
+```
+
+You can put your own identifying string for the _devicetype_ property.
+
+Press the button on your Hue bridge and then press the POST button again and you should get a success response like below. This lets your Hue bridge know that you have actual physical access to your bridge before you are granted an authorization token.
+
+![clip tool](https://developers.meethue.com/wp-content/uploads/2018/02/SuccessResponse-1.png)
+
+The "username" value is your token that should be put in the data-key attribute of the hue-config element:
+
+```
+    <hue-config
+      data-ip="192.168.1.100"
+      data-key="1028d66426293e821ecfd9ef1a0731df"
+    ></hue-config>
+```
+
+Once you have your IP and your username token (key), you are ready to go. Store your authorization token in a secure place and you should only need to do this once.
+
+### Step 3: Get the `<light-control>` component
 
 Grab the latest release and include it in your document's head.
 
@@ -38,7 +73,7 @@ You must add the IP address of your Hue Bridge and the API token from your bridg
 
 I think the easiest way to find the IP address of your bridge is to open the Hue app on your phone or tablet, go to Settings >> Bridge Settings and it will be listed there. But if you have trouble finding it there, the "get started" guide on the Hue developer site lists several other methods: https://developers.meethue.com/develop/get-started-2/
 
-Once you have the local IP address of your bridge, we can use Hue's clip tool to get an API token. Go to this address in your browser, using your Hub's IP address:
+Once you have the local IP address of your bridge, you can use Hue's clip tool to get an API token. Go to this address in your browser, using your Hub's IP address:
 
 `https://<bridge ip address>/debug/clip.html`
 
@@ -81,9 +116,11 @@ If you are unsure of the IDs of your lights, include the light-list component in
 
 `<light-list></light-list>`
 
+The `<light-list>` component is only intended to serve as a developmental tool for people who might not be familiar with examining the Fetch responses in the network tab of the dev tool. It would most likely serve no real purpose in your final app.
+
 ### Anatomy of the light-control element
 
-The `<light-control>` element consists of three native HTML elements, inside a `<p>` element with a class name of `.wrapper`:
+The `<light-control>` element consists of three native HTML elements, inside a `<fieldset>` element with a class name of `.wrapper`:
 
 - button - serves as an on/off switch
 - range input - adjust brightness of the light
