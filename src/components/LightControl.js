@@ -4,6 +4,19 @@ export default class LightControl extends HTMLElement {
   constructor() {
     super();
 
+    this.templateString = `
+    <fieldset class="wrapper">
+      <button>&nbsp;</button>
+      <input
+        type="color"
+        id="head"
+        name="head"
+        value="#e66465"
+        class="picker"
+      />
+      <input type="range" min="1" max="100" />
+    </fieldset>`;
+
     // open mode allow external access to inner dom
     this.root = this.attachShadow({ mode: 'open' });
   }
@@ -67,6 +80,7 @@ export default class LightControl extends HTMLElement {
 
   render() {
     if (this.dataset.systemId) {
+      const template = document.getElementById('light-button-template');
       const state = JSON.parse(this.dataset.state);
       const color = convertXYToRGB(
         state.xy[0],
@@ -74,15 +88,21 @@ export default class LightControl extends HTMLElement {
         parseInt(state.bri)
       );
 
+      this.root.innerHTML = '';
+
+      // Allow user override of the template by specifying template in html document
+      if (!template) {
+        this.template = this.templateString;
+        this.root.innerHTML = this.template;
+      } else {
+        this.root.appendChild(template.content.cloneNode(true));
+      }
+
       // Use the name set by the user, or the Hue name
       let name = this.innerHTML;
       if (name.trim().length === 0) {
         name = this.dataset.name;
       }
-      const template = document.getElementById('light-button-template');
-      const content = template.content.cloneNode(true);
-      this.root.innerHTML = '';
-      this.root.appendChild(content);
 
       const button = this.root.querySelector('button');
       const range = this.root.querySelector('input[type=range]');
