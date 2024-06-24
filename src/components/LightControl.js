@@ -123,6 +123,7 @@ export default class LightControl extends HTMLElement {
       button.addEventListener('click', this.buttonClickHandler.bind(this));
       button.innerText = name + ' : ' + (state.on ? 'on' : 'off');
 
+      range.addEventListener('input', this.rangeInputHandler.bind(this));
       range.addEventListener('change', this.rangeChangeHandler.bind(this));
       range.value = Math.round((parseInt(state.bri) * 100) / 254);
 
