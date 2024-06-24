@@ -4,6 +4,11 @@ export default class LightControl extends HTMLElement {
   constructor() {
     super();
 
+    document.addEventListener('hue-data-loaded', async (e) => {
+      console.log(this.dataset.id + ': hue-data-loaded');
+      this.updateState();
+    });
+
     this.templateString = `
     <fieldset class="wrapper">
       <button>&nbsp;</button>
@@ -21,37 +26,23 @@ export default class LightControl extends HTMLElement {
     this.root = this.attachShadow({ mode: 'open' });
   }
 
-  buttonClickHandler = () => {
-    const stateEvent = new CustomEvent('hue-set-on', {
-      detail: {
-        systemId: this.dataset.systemId,
-        on: !JSON.parse(this.dataset.state).on,
-      },
-    });
-    document.dispatchEvent(stateEvent);
+  updateState = () => {
+    const data = app.store.getLightData(this.dataset.id);
+    this.dataset.state = data.state;
+    this.dataset.modelid = data.modelid;
+    this.render();
   };
 
-  rangeInputHandler = (event) => {
-    const bri = Math.round((event.target.value * 254) / 100);
-    const stateEvent = new CustomEvent('hue-set-brightness', {
-      detail: {
-        systemId: this.dataset.systemId,
-        bri: bri,
-      },
-    });
-    document.dispatchEvent(stateEvent);
+  buttonClickHandler = async () => {
+    await app.store.setOnState(
+      this.dataset.id,
+      !JSON.parse(this.dataset.state).on
+    );
   };
 
-  rangeChangeHandler = (event) => {
+  rangeChangeHandler = async (event) => {
     const bri = Math.round((event.target.value * 254) / 100);
-    const stateEvent = new CustomEvent('hue-set-brightness', {
-      detail: {
-        systemId: this.dataset.systemId,
-        bri: bri,
-        update: true,
-      },
-    });
-    document.dispatchEvent(stateEvent);
+    await app.store.setBrightnessState(this.dataset.id, bri, true);
   };
 
   pickerInputHandler = (event) => {
@@ -76,12 +67,22 @@ export default class LightControl extends HTMLElement {
     document.dispatchEvent(stateEvent);
   };
 
-  // connectedCallback() {}
+  connectedCallback() {
+    // document.addEventListener('hue-data-loaded', async (e) => {
+    //   console.log('hue-data-loaded');
+    //   console.log(app.store.getLightData(this.dataset.id));
+    //   const data = app.store.getLightData(this.dataset.id);
+    //   this.dataset.state = data.state;
+    //   this.dataset.modelid = data.modelid;
+    //   this.render();
+    // });
+  }
 
   render() {
-    if (this.dataset.systemId) {
+    if (this.dataset.state) {
       const template = document.getElementById('light-button-template');
       const state = JSON.parse(this.dataset.state);
+      // const state = this.dataset.state;
       const color = convertXYToRGB(
         state.xy[0],
         state.xy[1],
@@ -111,7 +112,6 @@ export default class LightControl extends HTMLElement {
       button.addEventListener('click', this.buttonClickHandler.bind(this));
       button.innerText = name + ' : ' + (state.on ? 'on' : 'off');
 
-      range.addEventListener('input', this.rangeInputHandler.bind(this));
       range.addEventListener('change', this.rangeChangeHandler.bind(this));
       range.value = Math.round((parseInt(state.bri) * 100) / 254);
 
