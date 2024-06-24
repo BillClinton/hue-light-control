@@ -40,6 +40,17 @@ export default class LightControl extends HTMLElement {
     );
   };
 
+  rangeInputHandler = async (event) => {
+    if (!this.rangeInputPaused) {
+      const bri = Math.round((event.target.value * 254) / 100);
+      app.store.setBrightnessState(this.dataset.id, bri);
+      setTimeout(() => {
+        this.rangeInputPaused = false;
+      }, 300);
+      this.rangeInputPaused = true;
+    }
+  };
+
   rangeChangeHandler = async (event) => {
     const bri = Math.round((event.target.value * 254) / 100);
     await app.store.setBrightnessState(this.dataset.id, bri, true);

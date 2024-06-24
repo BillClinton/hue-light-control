@@ -76,7 +76,7 @@ const Store = {
     app.store.updateState(response);
   },
 
-  setBrightnessState: async (lightID, bri) => {
+  setBrightnessState: async (lightID, bri, update = false) => {
     const result = await fetch(
       `http://${app.store.config.ip}/api/${app.store.config.key}/lights/${lightID}/state`,
       {
@@ -85,7 +85,9 @@ const Store = {
       }
     );
     const response = await result.json();
+    if (update) {
     app.store.updateState(response);
+    }
   },
 
   setColorState: async (lightID, color, modelID) => {
