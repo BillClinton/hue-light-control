@@ -56,38 +56,24 @@ export default class LightControl extends HTMLElement {
     await app.store.setBrightnessState(this.dataset.id, bri, true);
   };
 
-  pickerInputHandler = (event) => {
-    const stateEvent = new CustomEvent('hue-set-color', {
-      detail: {
-        systemId: this.dataset.systemId,
-        color: event.target.value,
-      },
-    });
-    document.dispatchEvent(stateEvent);
+  pickerInputHandler = async (event) => {
+    await app.store.setColorState(
+      this.dataset.id,
+      event.target.value,
+      this.dataset.modelid
+    );
   };
 
-  pickerChangeHandler = (event) => {
-    console.log('pickerChangeHandler', event.target.value);
-    const stateEvent = new CustomEvent('hue-set-color', {
-      detail: {
-        systemId: this.dataset.systemId,
-        color: event.target.value,
-        update: true,
-      },
-    });
-    document.dispatchEvent(stateEvent);
+  pickerChangeHandler = async (event) => {
+    await app.store.setColorState(
+      this.dataset.id,
+      event.target.value,
+      this.dataset.modelid,
+      true
+    );
   };
 
-  connectedCallback() {
-    // document.addEventListener('hue-data-loaded', async (e) => {
-    //   console.log('hue-data-loaded');
-    //   console.log(app.store.getLightData(this.dataset.id));
-    //   const data = app.store.getLightData(this.dataset.id);
-    //   this.dataset.state = data.state;
-    //   this.dataset.modelid = data.modelid;
-    //   this.render();
-    // });
-  }
+  connectedCallback() {}
 
   render() {
     if (this.dataset.state) {

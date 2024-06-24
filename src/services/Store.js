@@ -86,11 +86,11 @@ const Store = {
     );
     const response = await result.json();
     if (update) {
-    app.store.updateState(response);
+      app.store.updateState(response);
     }
   },
 
-  setColorState: async (lightID, color, modelID) => {
+  setColorState: async (lightID, color, modelID, update = false) => {
     let xy = convertRGBToXY(color, modelID);
     let bri = approximateBrightness(color);
 
@@ -102,7 +102,9 @@ const Store = {
       }
     );
     const response = await result.json();
-    app.store.updateState(response);
+    if (update) {
+      app.store.updateState(response);
+    }
   },
 
   updateState: (response) => {
@@ -131,6 +133,17 @@ const Store = {
       }
     }
     document.dispatchEvent(new Event('hue-data-loaded'));
+  },
+
+  updateVal: (id, key, val) => {
+    const acceptableKeys = ['on', 'xy', 'bri'];
+    console.log('updateVal', id, key, val);
+
+    if (acceptableKeys.includes(key)) {
+      app.store.lights[id].state[key] = val;
+    } else {
+      console.warn(`<${key}> is not a valid setting.  Requested path: ${path}`);
+    }
   },
 };
 
